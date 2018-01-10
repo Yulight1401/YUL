@@ -193,7 +193,7 @@ module.exports = function tokenizer(input) {
           value += char
           char = input[++current]
         }
-  
+        // if(char !== ' ') {throw TypeError('cannot recognise' + char)}
         tokens.push({ type: 'number', value: value })
   
         continue
@@ -218,36 +218,84 @@ module.exports = function tokenizer(input) {
           tokens.push({ type: 'evaluate', value: '<-' })
           current++
           continue
-        } else {
-          tokens.push({ type: 'less', value: '<'})
-          continue
-        }
-  
+        } else if (char === '=') {
+            tokens.push({type: 'expression', value: '<='})
+            current++
+            continue
+          } else {
+            tokens.push({ type: 'less', value: '<'})
+            continue
+          }
+        
       }
 
       if (char === '=') {
   
         char = input[++current]
         if (char === '>') {
-          tokens.push({ type: 'function', value: '=>' })
+          tokens.push({ type: 'functionEx', value: '=>' })
           current++
           continue
+        } else if (char === '=') {
+            tokens.push({type: 'expression', value: '=='}) 
+            current++
+            continue 
         } else {
-          tokens.push({ type: 'equal', value: '='})
-          continue
+           tokens.push({ type: 'equal', value: '='})
+           continue
         }
-  
+        
       }
       
       if (char === '>') {
-        tokens.push({
-          type: 'bigger',
-          value: '>',
-        })
-        current++
-        continue
+        char = input[++current]
+        if (char === '=') {
+          tokens.push({
+            type: 'expression',
+            value: '>='
+          })
+          current++
+          continue
+        } else {
+          tokens.push({
+            type: 'expression',
+            value: '>',
+          })
+          continue
+        }
       }
-      
+      if (char === 'w') {
+        let value = ''
+  
+        char = input[++current]
+  
+        if (char === 'h') {
+          char = input[++current]
+          if (char === 'i') {
+            char = input[++current]
+            if (char === 'l') {
+              char = input[++current]
+              if (char === 'e') {
+                char = input[++current]
+                tokens.push({type: 'while', value: 'while'})
+                continue
+              } else {
+                current -= 4
+                char = input[current]
+              }
+            } else {
+              current -= 3
+              char = input[current]
+            }
+
+          } else {
+            current -= 2
+            char = input[current]
+          }
+        } else {
+          char = input[--current]
+        }
+      }
   
       if (char === 'l') {
         let value = ''
@@ -259,7 +307,7 @@ module.exports = function tokenizer(input) {
           if (char === 't') {
             char = input[++current]
             if (WHITESPACE.test(char)) {
-              tokens.push({type: 'variable', value: 'let'})
+              tokens.push({type: 'let', value: 'let'})
               continue
             } else {
               current -= 3

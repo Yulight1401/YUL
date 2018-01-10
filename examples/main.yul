@@ -1,17 +1,20 @@
 # 123 #
-let a <- -2;
-let b <- 1;
-let c <- '123';
-let M1 <- fun (let d) {
+let a <- -2
+let b <- 1
+let c <- '123'
+fun M1 (d) {
     let a <- 0
-    let M2 <- fun (b) {
-        let m3 <- fun () {}
+    fun M2 (b) {
+        fun m3 () {}
         a <- c
     }
-};
+}
+while (a > -3) {
+    a--
+}
 # (b > 1) ? {
-a++;
-b--;
+a++
+b--
 } (a > 0) ? {
-a + b;
-}; #
+a + b
+} #
